@@ -290,7 +290,7 @@
   var $ = /"/g;
   var y = /^(?:script|style|textarea|title)$/i;
   var w = (t3) => (i3, ...s5) => ({ _$litType$: t3, strings: i3, values: s5 });
-  var x2 = w(1);
+  var x = w(1);
   var b = w(2);
   var T = Symbol.for("lit-noChange");
   var A = Symbol.for("lit-nothing");
@@ -592,9 +592,9 @@
         position: relative;
         display: flex;
         flex-direction: column;
-        min-height: 222px;
-        height: 100%;
-        flex: 1 1 0;
+        min-height: var(--card-min-height, 222px);
+        min-width: var(--consonant-merch-card-min-width);
+        max-width: var(--consonant-merch-card-max-height);
         text-align: left;
         border-radius: var(--consonant-merch-card-spacing-xxxs);
         background-color: var(--consonant-merch-card-background-color);
@@ -624,6 +624,13 @@
         height: 100%;
         flex-direction: row;
         flex-wrap: wrap;
+    }
+
+    .image {
+        height: var(--consonant-merch-card-image-height);
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 
     .icons {
@@ -697,8 +704,8 @@
         flex-grow: 1;
         position: relative;
         width: 100%;
-        min-height: var(--consonant-merch-card-image-height);
-        max-height: var(--consonant-merch-card-image-height);
+        min-height: 213px;
+        max-height: 213px;
         background-color: var(--background-color);
         background-position: 50% 50%;
         background-repeat: no-repeat;
@@ -839,16 +846,16 @@
       super();
     }
     renderIcons() {
-      return this.icons && this.icons.length > 0 ? x2`
+      return this.icons && this.icons.length > 0 ? x`
                   <div class="icons">
                       ${this.icons.map(
-        (icon) => x2`<img src="${icon.src}" alt="${icon.alt}" />`
+        (icon) => x`<img src="${icon.src}" alt="${icon.alt}" />`
       )}
                   </div>
               ` : "";
     }
     createCheckBox() {
-      return this.checkboxLabel ? x2`
+      return this.checkboxLabel ? x`
                   <div class="checkbox-container">
                       <input id="alt-cta" type="checkbox" />
                       <span
@@ -862,9 +869,9 @@
               ` : "";
     }
     createPlansFooter() {
-      const footerSlot = x2` <slot name="footer"></slot>`;
+      const footerSlot = x` <slot name="footer"></slot>`;
       const secureLabel = this["secureLabel"];
-      return secureLabel ? x2` <div class="standard-wrapper">
+      return secureLabel ? x` <div class="standard-wrapper">
                   <div class="secure-transaction-wrapper">
                       <span class="secure-transaction-icon"></span>
                       <span class="secure-transaction-label"
@@ -882,7 +889,7 @@
       if (this.evergreen) {
         additionalStyles = `border: 1px solid ${this.badgeBackgroundColor}; border-right: none;`;
       }
-      return x2`
+      return x`
             <div
                 class="${this.variant}-ribbon"
                 style="background-color: ${this.badgeBackgroundColor}; color: ${this.badgeColor}; ${additionalStyles ? ` ${additionalStyles}` : ""}"
@@ -931,7 +938,7 @@
           return;
         }
         const value = newFilters[key];
-        if (value === 1 || Number.isNaN(x))
+        if (value === 1 || Number(value) === NaN)
           return;
         newFilters[key] = Number(value) + 1;
       });
@@ -951,11 +958,11 @@
         case "catalog":
           return this.renderCatalog();
         default:
-          return x2` <div />`;
+          return x` <div />`;
       }
     }
     renderSpecialOffer() {
-      return x2` <div
+      return x` <div
                 class="image"
                 style="${this.image ? `background-image: url(${this.image})` : ""}"
             >
@@ -966,20 +973,20 @@
                 <slot name="heading-xs"></slot>
                 <slot name="body-xs"></slot>
             </div>
-            ${this.evergreen ? x2`
+            ${this.evergreen ? x`
                       <div
                           class="detail-bg-container"
                           style="background: ${this["detailBg"]}"
                       >
                           <slot name="detail-bg"></slot>
                       </div>
-                  ` : x2`
+                  ` : x`
                       <hr />
                       <slot name="footer"></slot>
                   `}`;
     }
     renderSegment() {
-      return x2` ${this.decorateRibbon()}
+      return x` ${this.decorateRibbon()}
             <div class="body">
                 <slot name="heading-xs"></slot>
                 <slot name="heading-xs"></slot>
@@ -989,7 +996,7 @@
             <slot name="footer"></slot>`;
     }
     renderPlans() {
-      return x2` ${this.decorateRibbon()}
+      return x` ${this.decorateRibbon()}
             <div class="body">
                 ${this.renderIcons()}
                 <slot name="heading-xs"></slot>
@@ -1001,7 +1008,7 @@
             ${this.createPlansFooter()}`;
     }
     renderCatalog() {
-      return x2` <div class="body">
+      return x` <div class="body">
                 <div class="top-section">
                     ${this.renderIcons()} ${this.decorateRibbon()}
                     <div
@@ -1170,7 +1177,7 @@
       this.hasMore = false;
     }
     render() {
-      return x2` <slot></slot>
+      return x` <slot></slot>
             ${this.showMoreButton}`;
     }
     updated(changedProperties) {
@@ -1227,7 +1234,7 @@
     get showMoreButton() {
       if (!this.hasMore)
         return;
-      return x2`<button style="order: 1000;" @click="${this.showMore}">
+      return x`<button style="order: 1000;" @click="${this.showMore}">
             ${this.showMoreText}
         </button>`;
     }
