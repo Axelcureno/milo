@@ -290,7 +290,7 @@
   var $ = /"/g;
   var y = /^(?:script|style|textarea|title)$/i;
   var w = (t3) => (i3, ...s5) => ({ _$litType$: t3, strings: i3, values: s5 });
-  var x2 = w(1);
+  var x = w(1);
   var b = w(2);
   var T = Symbol.for("lit-noChange");
   var A = Symbol.for("lit-nothing");
@@ -593,8 +593,12 @@
         display: flex;
         flex-direction: column;
         min-height: 222px;
+        width: 100%;
+        max-width: 100%;
         height: 100%;
         flex: 1 1 0;
+        min-width: var(--consonant-merch-card-min-width);
+        max-width: var(--consonant-merch-card-max-height);
         text-align: left;
         border-radius: var(--consonant-merch-card-spacing-xxxs);
         background-color: var(--consonant-merch-card-background-color);
@@ -624,6 +628,13 @@
         height: 100%;
         flex-direction: row;
         flex-wrap: wrap;
+    }
+
+    .image {
+        height: var(--consonant-merch-card-image-height);
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 
     .icons {
@@ -697,8 +708,8 @@
         flex-grow: 1;
         position: relative;
         width: 100%;
-        min-height: var(--consonant-merch-card-image-height);
-        max-height: var(--consonant-merch-card-image-height);
+        min-height: 213px;
+        max-height: 213px;
         background-color: var(--background-color);
         background-position: 50% 50%;
         background-repeat: no-repeat;
@@ -792,63 +803,36 @@
   // src/merch-card.js
   var MerchCard = class extends s4 {
     static properties = {
-      name: { type: String },
       variant: { type: String },
       type: { type: String },
-      badgeColor: { type: String, attribute: "badge-color" },
-      badgeBackgroundColor: {
-        type: String,
-        attribute: "badge-background-color"
-      },
-      badgeText: { type: String, attribute: "badge-text" },
-      icons: { type: Array },
+      badge: { type: Object },
       actionmenu: { type: Boolean, attribute: "action-menu" },
       actionMenuContent: { type: String, attribute: "action-menu-content" },
       title: { type: String },
       description: { type: String },
       image: { type: String, attribute: "image" },
       customHr: { type: String, attribute: "hr" },
+      icons: { type: Array },
       detailBg: { type: String, attribute: "detail-bg" },
       secureLabel: { type: String, attribute: "secure-label" },
       checkboxLabel: { type: String, attribute: "checkbox-label" },
       evergreen: { type: Boolean },
-      filters: {
-        type: String,
-        reflect: true,
-        converter: {
-          fromAttribute: (value, type) => {
-            return Object.fromEntries(
-              value.split(",").map((filter) => {
-                const [key, order] = filter.split(":");
-                const value2 = Number(order);
-                return [key, isNaN(value2) ? void 0 : value2];
-              })
-            );
-          },
-          toAttribute: (value, type) => {
-            return Object.entries(value).map(
-              ([key, value2]) => isNaN(value2) ? key : `${key}:${value2}`
-            ).join(",");
-          }
-        }
-      },
-      types: { type: String, attribute: "types" }
+      attrFilters: { type: String, attribute: "filters" },
+      attrTypes: { type: String, attribute: "types" }
     };
     static styles = [sharedStyles];
     constructor() {
       super();
     }
     renderIcons() {
-      return this.icons && this.icons.length > 0 ? x2`
+      return this.icons && this.icons.length > 0 ? x`
                   <div class="icons">
-                      ${this.icons.map(
-        (icon) => x2`<img src="${icon.src}" alt="${icon.alt}" />`
-      )}
+                      ${this.icons.map((icon) => x`<img src="${icon}" />`)}
                   </div>
               ` : "";
     }
     createCheckBox() {
-      return this.checkboxLabel ? x2`
+      return this.checkboxLabel ? x`
                   <div class="checkbox-container">
                       <input id="alt-cta" type="checkbox" />
                       <span
@@ -862,9 +846,9 @@
               ` : "";
     }
     createPlansFooter() {
-      const footerSlot = x2` <slot name="footer"></slot>`;
+      const footerSlot = x` <slot name="footer"></slot>`;
       const secureLabel = this["secureLabel"];
-      return secureLabel ? x2` <div class="standard-wrapper">
+      return secureLabel ? x` <div class="standard-wrapper">
                   <div class="secure-transaction-wrapper">
                       <span class="secure-transaction-icon"></span>
                       <span class="secure-transaction-label"
@@ -874,22 +858,25 @@
                   ${footerSlot}
               </div>` : footerSlot;
     }
-    decorateRibbon() {
-      let additionalStyles;
-      if (!this.badgeBackgroundColor || !this.badgeColor || !this.badgeText) {
-        return;
-      }
-      if (this.evergreen) {
-        additionalStyles = `border: 1px solid ${this.badgeBackgroundColor}; border-right: none;`;
-      }
-      return x2`
+    generateRibbonTemplate(additionalStyles) {
+      const style = this.badge.style;
+      const [ribbonBgColor, ribbonTextColor] = style.split(", ", 2);
+      return x`
             <div
                 class="${this.variant}-ribbon"
-                style="background-color: ${this.badgeBackgroundColor}; color: ${this.badgeColor}; ${additionalStyles ? ` ${additionalStyles}` : ""}"
+                style="background-color: ${ribbonBgColor}; color: ${ribbonTextColor}; ${additionalStyles ? ` ${additionalStyles}` : ""}"
             >
-                ${this.badgeText}
+                ${this.badge.value}
             </div>
         `;
+    }
+    decorateRibbon() {
+      return this.generateRibbonTemplate();
+    }
+    decorateEvergreenRibbon() {
+      return this.generateRibbonTemplate(
+        `border: 1px solid ${this.badge.style[0]}; border-right: none;`
+      );
     }
     toggleCheckBox() {
       const checkbox = this.shadowRoot.querySelector("#alt-cta");
@@ -914,31 +901,35 @@
       );
       actionMenuContentSlot.classList.toggle("hidden");
     }
+    connectedCallback() {
+      super.connectedCallback();
+      this.initFilters();
+      this.initTypes();
+    }
     get title() {
-      const heading = this.querySelector('[slot="heading"]');
-      return heading.textContent.trim();
+      const heading = this.shadowRoot.querySelector(
+        'slot[name="heading-xs"]'
+      );
+      return heading.assignedNodes()[0]?.textContent;
     }
-    /**
-     * If the card is the single app, set the order for all filters to 2.
-     * If not, increment the order for all filters after the second card by 1.
-     * @param {*} singleApp
-     */
-    updateFilters(singleApp) {
-      const newFilters = { ...this.filters };
-      Object.keys(newFilters).forEach((key) => {
-        if (singleApp) {
-          newFilters[key] = 2;
-          return;
-        }
-        const value = newFilters[key];
-        if (value === 1 || Number.isNaN(x))
-          return;
-        newFilters[key] = Number(value) + 1;
-      });
-      this.filters = newFilters;
+    initFilters() {
+      if (this.attrFilters) {
+        this.filters = Object.fromEntries(
+          this.attrFilters.split(",").map((filter) => filter.split(":"))
+        );
+      }
+      this.filter = {};
     }
-    includes(text) {
-      return this.textContent.match(new RegExp(text, "i")) !== null;
+    initTypes() {
+      this.types = this.attrTypes ? this.attrTypes.split(",") : [];
+    }
+    includes(string) {
+      const slots = [...this.shadowRoot.querySelectorAll("slot")];
+      return slots.some(
+        (slot) => slot.assignedNodes().some(
+          (node) => node.textContent?.toLowerCase().includes(string)
+        )
+      );
     }
     render() {
       switch (this.variant) {
@@ -950,36 +941,38 @@
           return this.renderPlans();
         case "catalog":
           return this.renderCatalog();
+        case "evergreen":
+          return this.renderEverGreen();
         default:
-          return x2` <div />`;
+          return x`<div class="no-variant>No variant detected. Please check authoring document.</div> <div />`;
       }
     }
     renderSpecialOffer() {
-      return x2` <div
+      return x` <div
                 class="image"
                 style="${this.image ? `background-image: url(${this.image})` : ""}"
             >
-                ${this.decorateRibbon()}
+                ${this.badge ? this.decorateRibbon() : ""}
             </div>
             <div class="body">
                 <slot name="detail-m"></slot>
                 <slot name="heading-xs"></slot>
                 <slot name="body-xs"></slot>
             </div>
-            ${this.evergreen ? x2`
+            ${this.evergreen ? x`
                       <div
                           class="detail-bg-container"
                           style="background: ${this["detailBg"]}"
                       >
                           <slot name="detail-bg"></slot>
                       </div>
-                  ` : x2`
+                  ` : x`
                       <hr />
                       <slot name="footer"></slot>
                   `}`;
     }
     renderSegment() {
-      return x2` ${this.decorateRibbon()}
+      return x` ${this.badge ? this.decorateRibbon() : ""}
             <div class="body">
                 <slot name="heading-xs"></slot>
                 <slot name="heading-xs"></slot>
@@ -989,7 +982,7 @@
             <slot name="footer"></slot>`;
     }
     renderPlans() {
-      return x2` ${this.decorateRibbon()}
+      return x` ${this.badge ? this.decorateRibbon() : ""}
             <div class="body">
                 ${this.renderIcons()}
                 <slot name="heading-xs"></slot>
@@ -1001,9 +994,10 @@
             ${this.createPlansFooter()}`;
     }
     renderCatalog() {
-      return x2` <div class="body">
+      return x` <div class="body">
                 <div class="top-section">
-                    ${this.renderIcons()} ${this.decorateRibbon()}
+                    ${this.renderIcons()}
+                    ${this.badge ? this.decorateRibbon() : ""}
                     <div
                         class="action-menu ${!this.actionmenu ? "hidden" : "invisible"}"
                         @click="${this.toggleActionMenu}"
@@ -1020,6 +1014,31 @@
                 <slot name="body-xs"></slot>
             </div>
             <slot name="footer"></slot>`;
+    }
+    renderEverGreen() {
+      const [ribbonBgColor, ribbonTextColor] = this.badge?.style?.split(
+        ", ",
+        2
+      );
+      return x`
+            <div
+                class="image"
+                style="${this.image ? `background-image: url(${this.image})` : ""}"
+            >
+                ${this.badge ? this.decorateEvergreenRibbon() : ""}
+            </div>
+            <div class="body">
+                <slot name="detail-m"></slot>
+                <slot name="heading-xs"></slot>
+                <slot name="body-xs"></slot>
+            </div>
+            <div
+                class="detail-bg-container"
+                style="${ribbonBgColor ? `background: ${ribbonBgColor}` : ""}"
+            >
+                <slot name="body-xxs"></slot>
+            </div>
+        `;
     }
   };
   customElements.define("merch-card", MerchCard);
@@ -1062,23 +1081,12 @@
     const result = [];
     const keyValuePairs = hash.replace(/^#/, "").split("&");
     for (const pair of keyValuePairs) {
-      const [key, value = ""] = pair.split("=");
+      const [key, value] = pair.split("=");
       if (key) {
-        result.push([key, decodeURIComponent(value)]);
+        result.push([key, decodeURIComponent(value || "")]);
       }
     }
     return Object.fromEntries(result);
-  }
-  function pushState(state) {
-    const hash = new URLSearchParams(window.location.hash.slice(1));
-    Object.entries(state).forEach(([key, value]) => {
-      if (value) {
-        hash.set(key, value);
-      } else {
-        hash.delete(key);
-      }
-    });
-    window.location.hash = decodeURIComponent(hash.toString());
   }
   function deeplink(callback) {
     const handler = (e4) => {
@@ -1112,12 +1120,9 @@
       sensitivity: "base"
     })
   );
-  var makeAuthoredSorter = ({ filter }) => (elements) => elements.sort((a3, b2) => {
-    if (a3.filters[filter] && b2.filters[filter]) {
-      return a3.filters[filter] - b2.filters[filter];
-    }
-    return -1;
-  });
+  var makeAuthoredSorter = ({ filter }) => (elements) => elements.sort(
+    (a3, b2) => (a3.filters[filter] ?? elements.length) - (b2.filters[filter] ?? elements.length)
+  );
   var makeSearcher = ({ search }) => {
     if (search?.length) {
       search = search.toLowerCase();
@@ -1136,51 +1141,21 @@
         reflect: true
       },
       types: { type: String, attribute: "types", reflect: true },
-      limit: { type: Number, attribute: "limit" },
-      page: { type: Number, attribute: "page", reflect: true },
-      singleApp: { type: String, attribute: "single_app" },
-      showMoreText: { type: String, attribute: "show-more-text" },
-      hasMore: { type: Boolean }
+      limit: { type: Number, attribute: "limit", reflect: true }
     };
     static styles = i`
-        button {
-            grid-column: 1;
-            place-self: baseline;
-
-            background-color: transparent;
-            border-radius: 16px;
-            border: 2px solid var(--text-color, #2c2c2c);
-            color: var(--text-color, #2c2c2c);
-            display: inline-block;
-            font-size: 15px;
-            font-style: normal;
-            font-weight: 700;
-            line-height: 16px;
-            padding: 5px 14px;
-        }
-
-        button:hover {
-            background-color: var(--color-black, #000);
-            border-color: var(--color-black, #000);
-            color: var(--color-white, #fff);
+        ul,
+        ::slotted(li) {
+            display: contents;
         }
     `;
-    constructor() {
-      super();
-      this.hasMore = false;
-    }
     render() {
-      return x2` <slot></slot>
-            ${this.showMoreButton}`;
+      return x`<ul role="list">
+            <slot></slot>
+        </ul>`;
     }
     updated(changedProperties) {
       let updateChildren = false;
-      const children = [...this.children];
-      if (changedProperties.has("singleApp") && this.singleApp) {
-        children.forEach((card) => {
-          card.updateFilters(card.name === this.singleApp);
-        });
-      }
       if (!this._filters || changedProperties.has("filter") || changedProperties.has("types")) {
         this._filters = [makeCategoryFilter(this), makeTypeFilter(this)];
         updateChildren = true;
@@ -1193,17 +1168,11 @@
         this._sorter = this.sort === SortOrder.alphabetical ? makeAlphabeticalSorter(this) : makeAuthoredSorter(this);
         updateChildren = true;
       }
+      const children = [...this.querySelectorAll("merch-card")];
       const reducers = [...this._filters, this._searcher, this._sorter];
-      let result = reducers.reduce((elements, reducer) => reducer(elements), children).map((element, index) => [element, index]);
-      if (this.page && this.limit) {
-        const pageSize = this.page * this.limit;
-        this.hasMore = result.length > pageSize;
-        result = result.filter(([, index]) => index < pageSize);
-      }
-      if (result.length > 0) {
-        this.cardToScrollTo = result[result.length - 1][0];
-      }
-      let reduced = new Map(result);
+      const reduced = new Map(
+        reducers.reduce((elements, reducer) => reducer(elements), children).map((element, index) => [element, index])
+      );
       children.forEach((child) => {
         if (reduced.has(child)) {
           child.style.order = reduced.get(child);
@@ -1214,63 +1183,39 @@
         }
       });
     }
+    firstUpdated() {
+      const slot = this.shadowRoot.querySelector("slot");
+      const nodes = slot.assignedNodes({ flatten: true });
+      nodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "MERCH-CARD") {
+          const li = document.createElement("li");
+          li.setAttribute("role", "listitem");
+          node.setAttribute("tabindex", "0");
+          node.replaceWith(li);
+          li.appendChild(node);
+          node.addEventListener(
+            "keydown",
+            this.handleCardKeydown.bind(this)
+          );
+        }
+      });
+    }
     connectedCallback() {
       super.connectedCallback();
-      this.prepareShowMore();
-      this.prepareCards();
       this.startDeeplink();
     }
     disconnectedCallback() {
       super.disconnectedCallback();
       this.stopDeeplink();
     }
-    get showMoreButton() {
-      if (!this.hasMore)
-        return;
-      return x2`<button style="order: 1000;" @click="${this.showMore}">
-            ${this.showMoreText}
-        </button>`;
-    }
-    showMore() {
-      pushState({ page: this.page + 1 });
-      setTimeout(() => {
-        this.scrollToShowMore(this.cardToScrollTo);
-      }, 1);
-    }
-    prepareShowMore() {
-      if (this.page) {
-        this.limit = 24;
-      } else {
-        this.page = 1;
-      }
-    }
-    scrollToShowMore() {
-      this.cardToScrollTo.scrollIntoView({ behavior: "smooth" });
-    }
-    prepareCards() {
-      const cards = [...this.querySelectorAll("merch-card")].filter(
-        (node) => node.nodeType === Node.ELEMENT_NODE && node.tagName === "MERCH-CARD"
-      );
-      cards.forEach((node) => {
-        node.setAttribute("tabindex", "-1");
-        node.addEventListener("keydown", this.handleCardKeydown.bind(this));
-      });
-    }
     startDeeplink() {
       this.stopDeeplink = deeplink(
-        ({ filter = "all", types, sort, search, single_app, page }) => {
-          if (this.filter != filter) {
-            setTimeout(() => {
-              pushState({ page: void 0 });
-              this.page = 1;
-            }, 1);
-          }
+        ({ filter = "all", types, sort, search, single_app }) => {
           this.filter = filter;
           this.types = types ?? "";
           this.search = search ?? "";
-          this.singleApp = single_app;
+          this.single_app = single_app;
           this.sort = sort;
-          this.page = Number(page) || this.page;
         }
       );
     }
@@ -1301,7 +1246,7 @@
           return;
       }
       const nextCard = this.getNextCard(currentFocusedCard, arrowKey);
-      if (nextCard && document.activeElement !== nextCard) {
+      if (nextCard) {
         currentFocusedCard.setAttribute("tabindex", "-1");
         nextCard.setAttribute("tabindex", "0");
         nextCard.focus();
@@ -1325,8 +1270,8 @@
         (card) => window.getComputedStyle(card).display !== "none"
       );
       const orderedCards = allCards.sort((a3, b2) => {
-        const orderA = parseInt(a3.style.order) || allCards.indexOf(a3);
-        const orderB = parseInt(b2.style.order) || allCards.indexOf(b2);
+        const orderA = parseInt(window.getComputedStyle(a3).order) || allCards.indexOf(a3);
+        const orderB = parseInt(window.getComputedStyle(b2).order) || allCards.indexOf(b2);
         return orderA - orderB;
       });
       const currentIndex = orderedCards.indexOf(currentCard);
