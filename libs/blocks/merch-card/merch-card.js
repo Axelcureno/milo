@@ -35,9 +35,9 @@ const isHeadingTag = (tagName) => /^H[1-5]$/.test(tagName);
 const isParagraphTag = (tagName) => tagName === 'P';
 
 const createAndAppendTag = (tagName, attributes, content, parent) => {
-  const newElement = createTag(tagName, attributes, content);
-  parent.append(newElement);
-  return newElement;
+  const newTag = createTag(tagName, attributes, content);
+  parent.append(newTag);
+  return newTag;
 };
 
 const parseContent = (el, altCta, cardType, merchCard) => {
@@ -49,7 +49,8 @@ const parseContent = (el, altCta, cardType, merchCard) => {
     if (isHeadingTag(tagName)) {
       createAndAppendTag(tagName, { slot: textStyles[tagName] }, element.innerHTML, merchCard);
       return;
-    } if (isParagraphTag(tagName)) {
+    }
+    if (isParagraphTag(tagName)) {
       bodySlot.append(element);
     }
   });
@@ -70,7 +71,7 @@ const returnRibbonStyle = (ribbonMetadata) => {
 
 const getActionMenuContent = (el, ribbonMetadata) => {
   const index = (ribbonMetadata !== null) ? 1 : 0;
-  const expectedChildren = (ribbonMetadata !== null) ? 3 : 2;
+  const expectedChildren = ribbonMetadata !== null ? 3 : 2;
   if (el.childElementCount !== expectedChildren) {
     return null;
   }
