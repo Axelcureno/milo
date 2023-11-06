@@ -1,4 +1,4 @@
-// Mon, 06 Nov 2023 22:07:45 GMT
+// Mon, 06 Nov 2023 22:17:42 GMT
 import{html as r,LitElement as T}from"./lit-all.min.js";import{css as R,unsafeCSS as v}from"./lit-all.min.js";var u="(max-width: 899px)",h="(min-width: 900px)",m="(min-width: 1200px)",f="(min-width: 1440px)";var y=R`
     :host {
         position: relative;
@@ -219,12 +219,12 @@ import{html as r,LitElement as T}from"./lit-all.min.js";import{css as R,unsafeCS
     }
 
     :host([variant='special-offers'].wide) {
-        width: auto;
+        width: 75vw;
         min-height: 438px;
     }
 
     :host([variant='special-offers'].super-wide) {
-        width: auto;
+        width: 75vw;
         min-height: 438px;
     }
 
