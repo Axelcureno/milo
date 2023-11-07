@@ -1,10 +1,12 @@
 /* eslint-disable prefer-destructuring */
 import { decorateButtons, decorateBlockHrs } from '../../utils/decorate.js';
-import { getConfig, createTag } from '../../utils/utils.js';
+import { loadStyle, getConfig, createTag } from '../../utils/utils.js';
 import { decorateLinkAnalytics } from '../../martech/attributes.js';
 import { replaceKey } from '../../features/placeholders.js';
+import { getUpFromSectionMetadata } from '../card/cardUtils.js';
 import '../../deps/commerce.js';
 import '../../deps/merch-card.js';
+import { initLegacyMerchCard } from './legacy-merch-card.js'
 
 const cardTypes = ['segment', 'special-offers', 'plans', 'catalog', 'product'];
 
@@ -90,6 +92,11 @@ function getMerchCardRows(rows, ribbonMetadata, cardType, actionMenuContent) {
 }
 
 const init = (el) => {
+  let upClass = getUpFromSectionMetadata(section);
+  if (upClass) {
+    loadStyle('./legacy-merch-card.css');
+    initLegacyMerchCard(el);
+  }
   let section = el.closest('.section');
   if (section.parentElement.classList.contains('fragment')) {
     section.style.display = 'contents';

@@ -1,4 +1,4 @@
-// Mon, 06 Nov 2023 22:17:42 GMT
+// Tue, 07 Nov 2023 19:49:24 GMT
 import{html as r,LitElement as T}from"./lit-all.min.js";import{css as R,unsafeCSS as v}from"./lit-all.min.js";var u="(max-width: 899px)",h="(min-width: 900px)",m="(min-width: 1200px)",f="(min-width: 1440px)";var y=R`
     :host {
         position: relative;
@@ -219,12 +219,14 @@ import{html as r,LitElement as T}from"./lit-all.min.js";import{css as R,unsafeCS
     }
 
     :host([variant='special-offers'].wide) {
-        width: 75vw;
+        grid-column: span 3;
+        width: auto;
         min-height: 438px;
     }
 
     :host([variant='special-offers'].super-wide) {
-        width: 75vw;
+        grid-column: span 3;
+        width: auto;
         min-height: 438px;
     }
 
@@ -475,7 +477,7 @@ merch-card p, merch-card h3, merch-card h4 {
     margin: 0;
 }
 
-merch-card [is=inline-price] {
+merch-card span[is=inline-price] {
     display: inline-block;
 }
 
