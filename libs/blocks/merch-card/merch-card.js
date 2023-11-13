@@ -7,7 +7,8 @@ import { replaceKey } from '../../features/placeholders.js';
 import '../../deps/commerce.js';
 import '../../deps/merch-card.js';
 
-const cardTypes = ['segment', 'special-offers', 'plans', 'catalog', 'product'];
+const cardTypes = ['segment', 'special-offers', 'plans', 'catalog', 'product', 'inline-heading'];
+const merchCardGrids = ['one-merch-card', 'two-merch-cards', 'three-merch-cards', 'four-merch-cards'];
 
 const textStyles = {
   H5: 'detail-m',
@@ -106,6 +107,9 @@ const init = (el) => {
       fragment.style.display = 'contents';
       fragmentParent.style.display = 'contents';
       section = fragmentParent.parentElement;
+    }
+    if (!merchCardGrids.some((grid) => section.classList.contains(grid))) {
+      section.classList.add('three-merch-cards');
     }
     const headings = el.querySelectorAll('h1, h2, h3, h4, h5, h6');
     decorateLinkAnalytics(el, headings);
