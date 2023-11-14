@@ -15,10 +15,12 @@ const textStyles = {
   H4: 'body-xxs',
   H3: 'heading-xs',
   H2: 'heading-m',
-  H1: 'heading-l',
 };
 
-const getPodType = (styles) => styles?.find((style) => cardTypes.includes(style));
+const getPodType = (styles) => {
+  const match = styles?.find((style) => cardTypes.includes(style));
+  return match || 'segment';
+};
 
 const checkBoxLabel = (ctas, altCtaMetaData) => {
   const altCtaRegex = /href=".*"/;
