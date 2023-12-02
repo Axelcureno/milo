@@ -1,5 +1,5 @@
-// Sat, 02 Dec 2023 05:00:03 GMT
-import{html as o,LitElement as R}from"./lit-all.min.js";import{css as b,unsafeCSS as s}from"./lit-all.min.js";var w="(max-width: 378px)";var h="(min-width: 820px)",k="(min-width: 696px)",l="(min-width: 1230px)",p="(min-width: 1600px)";var $=b`
+// Sat, 02 Dec 2023 05:02:04 GMT
+import{html as o,LitElement as R}from"./lit-all.min.js";import{css as b,unsafeCSS as s}from"./lit-all.min.js";var w="(max-width: 378px)";var h="(min-width: 820px)",k="(min-width: 696px and max-width: 819px)",l="(min-width: 1230px)",p="(min-width: 1600px)";var $=b`
     :host {
         position: relative;
         display: flex;
