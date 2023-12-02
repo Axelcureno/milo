@@ -1,4 +1,4 @@
-// Sat, 02 Dec 2023 04:54:19 GMT
+// Sat, 02 Dec 2023 04:57:14 GMT
 import{html as o,LitElement as R}from"./lit-all.min.js";import{css as b,unsafeCSS as s}from"./lit-all.min.js";var w="(max-width: 378px)";var h="(min-width: 820px)",k="(min-width: 696px)",l="(min-width: 1230px)",p="(min-width: 1600px)";var $=b`
     :host {
         position: relative;
@@ -307,10 +307,6 @@ import{html as o,LitElement as R}from"./lit-all.min.js";import{css as b,unsafeCS
     .four-merch-cards.${t} {
         gap: var(--consonant-merch-spacing-m);
         grid-template-columns: repeat(2, var(--consonant-merch-card-${t}-tablet--width));
-    }
-
-    .merch-card.${t} {
-        width: var(--consonant-merch-card-${t}-tablet-width);
     }
 }
 
