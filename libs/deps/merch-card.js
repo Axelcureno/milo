@@ -1,5 +1,5 @@
-// Sat, 02 Dec 2023 00:57:30 GMT
-import{html as o,LitElement as T}from"./lit-all.min.js";import{css as b,unsafeCSS as s}from"./lit-all.min.js";var k="(min-width: 320px)",u="(max-width: 767px)";var l="(min-width: 768px)",h="(min-width: 1200px)",p="(min-width: 1600px)";var $=b`
+// Sat, 02 Dec 2023 03:25:29 GMT
+import{html as o,LitElement as T}from"./lit-all.min.js";import{css as b,unsafeCSS as s}from"./lit-all.min.js";var k="(max-width: 378px)",u="(min-width: 820px)";var l="(min-width: 768px)",h="(min-width: 1230px)",p="(min-width: 1600px)";var $=b`
     :host {
         position: relative;
         display: flex;
@@ -287,6 +287,10 @@ import{html as o,LitElement as T}from"./lit-all.min.js";import{css as b,unsafeCS
     .three-merch-cards.${t},
     .four-merch-cards.${t} {
         grid-template-columns: var(--consonant-merch-card-mobile-width);
+    }
+
+    .merch-card.${t} {
+        var(--consonant-merch-card-mobile-width);
     }
 }
 
