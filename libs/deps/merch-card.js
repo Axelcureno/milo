@@ -1,4 +1,4 @@
-// Sat, 02 Dec 2023 03:30:58 GMT
+// Sat, 02 Dec 2023 03:48:06 GMT
 import{html as o,LitElement as T}from"./lit-all.min.js";import{css as b,unsafeCSS as s}from"./lit-all.min.js";var k="(max-width: 378px)",u="(min-width: 820px)";var l="(min-width: 768px)",h="(min-width: 1230px)",p="(min-width: 1600px)";var $=b`
     :host {
         position: relative;
@@ -346,6 +346,7 @@ import{html as o,LitElement as T}from"./lit-all.min.js";import{css as b,unsafeCS
     --consonant-merch-card-detail-font-weight: 500;
     --consonant-merch-card-detail-letter-spacing: 0.8px;
     --consonant-merch-card-background-color: #fff;
+    --consontant-merch-card-img-border-radius: 16px 16px 0 0;
 
     --consonant-merch-card-heading-font-size: 18px;
     --consonant-merch-card-heading-line-height: 22.5px;
@@ -646,6 +647,7 @@ div[slot='bg-image'] img {
     width: 100%;
     min-height: var(--consonant-merch-card-image-height);
     max-height: var(--consonant-merch-card-image-height);
+    border-radius: --consontant-merch-card-img-border-radius;
     object-fit: cover;
 }
 
