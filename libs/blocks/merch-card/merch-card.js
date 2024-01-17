@@ -4,6 +4,7 @@ import { getMetadata } from '../section-metadata/section-metadata.js';
 import { processTrackingLabels } from '../../martech/attributes.js';
 import { replaceKey } from '../../features/placeholders.js';
 import '../../deps/merch-card.js';
+import '../../deps/merch-icon.js';
 
 const PRODUCT_NAMES = [
   'acrobat-pdf-pack',
@@ -323,18 +324,17 @@ const init = async (el) => {
     merchCard.appendChild(imageSlot);
   }
   if (!icons || icons.length > 0) {
-    const iconImgs = Array.from(icons).map((icon) => {
-      const img = {
-        src: icon.querySelector('img').src,
-        alt: icon.querySelector('img').alt,
-      };
-      return img;
+    icons.forEach((icon) => {
+      const imgSrc = icon.querySelector('img').src;
+      const imgAlt = icon.querySelector('img').alt;
+
+      const merchIcon = createTag('merch-icon', { size: 'm' });
+      merchIcon.setAttribute('src', imgSrc);
+      merchIcon.setAttribute('alt', imgAlt);
+
+      merchCard.appendChild(merchIcon);
+      icon.remove();
     });
-    merchCard.setAttribute(
-      'icons',
-      JSON.stringify(Array.from(iconImgs)),
-    );
-    icons.forEach((icon) => icon.remove());
   }
 
   addStock(merchCard, styles);
