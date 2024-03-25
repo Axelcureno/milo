@@ -110,6 +110,7 @@ export async function decorateBlockBg(block, node, { useHandleFocalpoint = false
       }
       if (!child.querySelector('img, video, a[href*=".mp4"]')) {
         child.style.background = child.textContent;
+        child.classList.add('expand-background');
         child.textContent = '';
       }
     });
@@ -181,6 +182,9 @@ export function getVideoAttrs(hash, dataset) {
   }
   if (playOnHover && isAutoplayOnce) {
     return `${globalAttrs} ${autoPlayAttrs} data-hoverplay`;
+  }
+  if (playOnHover) {
+    return `${globalAttrs} muted data-hoverplay`;
   }
   if (isAutoplayOnce) {
     return `${globalAttrs} ${autoPlayAttrs}`;
