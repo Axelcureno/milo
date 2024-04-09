@@ -1,4 +1,4 @@
-// branch: MWPW-142003-mobile-filters commit: 7683e0d83f654408e925f8c54b08e389192a221d Mon, 08 Apr 2024 21:54:29 GMT
+// branch: MWPW-142003-mobile-filters commit: 01f6c1818e021a14b67c1bae43c874d15af863e8 Tue, 09 Apr 2024 03:21:29 GMT
 import{html as a,LitElement as O}from"/libs/deps/lit-all.min.js";import{css as y,unsafeCSS as v}from"/libs/deps/lit-all.min.js";var g="(max-width: 767px)";var s="(min-width: 768px)",i="(min-width: 1200px)",m="(min-width: 1600px)";var k=y`
     :host {
         position: relative;
@@ -462,6 +462,8 @@ import{html as a,LitElement as O}from"/libs/deps/lit-all.min.js";import{css as y
     --consonant-merch-card-mini-compare-mobile-cta-font-size: 15px;
     --consonant-merch-card-mini-compare-mobile-cta-width: 75px;
     --consonant-merch-card-mini-compare-badge-mobile-max-width: 50px;
+    --consonant-merch-card-mini-compare-mobile-filter-font-size: 17px;
+    --consonant-merch-card-mini-compare-mobile-filter-padding: 15px;
 
     /* inline SVGs */
     --checkmark-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath fill='%23fff' d='M3.788 9A.999.999 0 0 1 3 8.615l-2.288-3a1 1 0 1 1 1.576-1.23l1.5 1.991 3.924-4.991a1 1 0 1 1 1.576 1.23l-4.712 6A.999.999 0 0 1 3.788 9z' class='spectrum-UIIcon--medium'/%3E%3C/svg%3E%0A");
@@ -809,10 +811,25 @@ merch-card[variant="mini-compare-chart"] .footer-row-cell-description a {
 
 @media screen and ${g} {
     .mobile-filter {
-        display: block;
+        display: grid;
         position: absolute;
         top: 10px;
         width: 100%;
+        grid-template-columns: repeat(2, minmax(142px, var(--consonant-merch-card-mini-compare-chart-width)));
+        gap: var(--consonant-merch-spacing-xs);
+    }
+
+    .mobile-filter select {
+        border: none;
+        font-family: inherit;
+        font-size: var(--consonant-merch-card-mini-compare-mobile-filter-font-size);
+        width: fit-content;
+        padding-right: var(--consonant-merch-card-mini-compare-mobile-filter-padding);
+    }
+
+    .mobile-filter select:focus {
+        outline: none;
+        border: none;
     }
 
     .mobile-filter select option {
